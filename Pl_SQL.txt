@@ -1,0 +1,177 @@
+set serveroutput on;
+--1st script--
+BEGIN
+dbms_output.put_line ('Hello World..');
+dbms_output.put_line ('----------------------------');
+END;
+/
+--2st script take two numbers from user and print the sum--
+declare
+a number;
+b number;
+c number;
+BEGIN
+   a:=&a;
+   b:=&b;
+   c:=a+b;
+   dbms_output.put_line ('Sum is' || c);
+   dbms_output.put_line ('----------------------------');
+END;
+/
+--3st script take three numbers from user and print the max--
+declare
+a number;
+b number;
+c number;
+m number;
+BEGIN
+     a:=&a;
+     b:=&b;
+     c:=&c;
+   if a>b and a>c then
+        m:=a;
+     elsif b>c then
+          m:=b;
+      else  m:=c;
+          end if;
+       dbms_output.put_line ('Max is' ||m );
+   dbms_output.put_line ('----------------------------');
+END;
+/
+--4st script take three numbers from user and print the max using case--
+declare
+a number;
+b number;
+c number;
+m number;
+BEGIN
+     a:=&a;
+     b:=&b;
+     c:=&c;
+     case
+   when a>b and a>c then
+        m:=a;
+    when b>c then
+          m:=b;
+      else  m:=c;
+          end case;
+       dbms_output.put_line ('Max is' ||m );
+   dbms_output.put_line ('----------------------------');
+END;
+/
+--5st script display 1 to 10 on console end loop--
+declare
+i number:=1;
+BEGIN
+ loop
+ dbms_output.put_line (i );
+    i:=i+1;
+    exit when i>10;
+    end loop;
+  dbms_output.put_line ('----------------------------');
+END;
+/
+--6st script display 1 to 10 on console for loop--
+declare
+i number;
+BEGIN
+   for i in reverse 1..10
+   loop
+ dbms_output.put_line (i );
+    end loop;
+  dbms_output.put_line ('----------------------------');
+END;
+/
+--7st script display 1 to 10 on console while loop--
+declare
+i number:=1;
+BEGIN
+   while i<=10
+   loop
+ dbms_output.put_line (i );
+     i:=i+1;
+    end loop;
+  dbms_output.put_line ('----------------------------');
+END;
+/
+create table testtrans(eid number not null primary key,
+                        ename varchar(20), 
+                             age number);
+desc testtrans;
+truncate table testtrans;
+declare
+i number;
+BEGIN
+   for i in 1..10
+   loop
+   insert into testtrans values (i,'Ram'||i, i+10);
+   end loop;
+   dbms_output.put_line ('----------------------------');
+ end;  
+/
+select * from testtrans;
+--8st script procedure--
+create or replace procedure proc1 is
+i number;
+BEGIN
+   for i in 1..10
+   loop
+   insert into testtrans values (10+i,'Ram'||i, i+10);
+   end loop;
+   dbms_output.put_line ('----------------------------');
+ end;  
+/
+--to runyour procedure--
+exec proc1;
+--9st script procedure in parameter--
+create or replace procedure proc2(data in number) is
+i number;
+BEGIN
+   for i in 1..10
+   loop
+   insert into testtrans values ((i+data),'Ram'||(i+data), i+data+10);
+   end loop;
+   dbms_output.put_line ('----------------------------');
+ end;  
+/
+exec proc2(21);
+select * from testtrans;
+
+--9st script procedure with in and out parameter--
+create or replace procedure proc2(a in number, b in number, c out number)is
+begin
+c:=a+b;
+end;
+/
+var result number;
+exec proc2(100,200,:result);
+print result;
+--10st script procedure with inout parameter--
+create or replace procedure proc3(a in out number)is
+begin
+a:=a*2;
+end;
+/
+print result;
+exec proc3(:result);
+print result;
+exec proc3(:result);
+print result;
+exec proc3(:result);
+--11st script design a procedure that takes empnumber as input and returns name and his salary--
+create table emp2 (empno int not null primary key , ename varchar(20), deptname varchar(10), salary int);
+insert into emp2 values (1,'Raja','Sales', 12000);
+insert into emp2 values (2,'Rajesh','Admin', 42000);
+insert into emp2 values (3,'Rajat','Sales', 22000);
+select * from emp2;
+truncate table emp2;
+create or replace procedure proc4(a in number, b out char, c out number)is
+begin 
+ select ename,salary into b, c from emp2 where empno=a;
+ end;
+ /
+ var name char(20);
+ var sal number;
+ exec proc4(2,:name,:sal);
+ print name;
+ print sal;
